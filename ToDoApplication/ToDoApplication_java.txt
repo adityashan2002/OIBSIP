@@ -1,0 +1,62 @@
+package com.example.todoapp;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText taskTitleEditText;
+    private EditText taskDescriptionEditText;
+    private ListView taskListView;
+    private ArrayList<String> taskList;
+    private ArrayAdapter<String> taskAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        taskTitleEditText = findViewById(R.id.taskTitleEditText);
+        taskDescriptionEditText = findViewById(R.id.taskDescriptionEditText);
+        taskListView = findViewById(R.id.taskListView);
+
+        taskList = new ArrayList<>();
+        taskAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, taskList);
+        taskListView.setAdapter(taskAdapter);
+
+        taskListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Handle task completion or activation here
+            }
+        });
+    }
+
+    public void addTask(View view) {
+        String title = taskTitleEditText.getText().toString();
+        String description = taskDescriptionEditText.getText().toString();
+        String task = title + (description.isEmpty() ? "" : ": " + description);
+
+        taskList.add(task);
+        taskAdapter.notifyDataSetChanged();
+
+        taskTitleEditText.getText().clear();
+        taskDescriptionEditText.getText().clear();
+    }
+
+    public void deleteTask(View view) {
+        int selectedItemPosition = taskListView.getCheckedItemPosition();
+        if (selectedItemPosition != ListView.INVALID_POSITION) {
+            taskList.remove(selectedItemPosition);
+            taskAdapter.notifyDataSetChanged();
+            taskListView.clearChoices();
+        }
+    }
+}
